@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07131f" />
+    <title>Drone Delivery Challenge</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <span class="brand-mark">DR</span>
+          <div>
+            <p class="eyebrow">ROBOTICS OPEN DAY / CLASSIC ARCADE</p>
+            <h1>DRONE RUN <span>01</span></h1>
+          </div>
+        </div>
+        <button id="muteButton" class="icon-button" type="button" aria-label="Matikan suara">Suara: ON</button>
+      </header>
+
+      <section class="game-stage" aria-label="Area permainan">
+        <canvas id="gameCanvas" width="1280" height="720"></canvas>
+
+        <div class="hud" aria-live="polite">
+          <div class="hud-card time-card">
+            <span class="hud-icon clock-icon" aria-hidden="true"></span>
+            <span class="hud-label">WAKTU</span>
+            <strong id="timerValue">40</strong><span class="hud-unit">SEC</span>
+            <span class="timer-track"><i id="timerBar"></i></span>
+          </div>
+          <div class="hud-card score-card">
+            <span class="hud-icon star-icon" aria-hidden="true"></span>
+            <span class="hud-label">SKOR</span>
+            <strong id="scoreValue">0</strong>
+          </div>
+          <div class="hud-card stat-card">
+            <span class="hud-icon box-icon" aria-hidden="true"></span>
+            <span class="hud-label">DROP / COMBO</span>
+            <strong><span id="deliveredValue">0</span> <small>/ x<span id="comboValue">0</span></small></strong>
+          </div>
+          <div class="package-card" id="packageIndicator">
+            <span class="hud-icon target-icon" aria-hidden="true"></span>
+            <span class="hud-label">NEXT DROP</span>
+            <span id="packageSwatch" class="package-swatch"></span>
+            <strong id="packageTarget">-</strong>
+          </div>
+        </div>
+
+        <div class="camera-panel">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <span id="trackingStatus" class="tracking-status">Kamera belum aktif</span>
+        </div>
+
+        <section id="idleScreen" class="screen screen-visible">
+          <div class="screen-panel intro-panel">
+            <div class="hero-kicker"><span><span class="live-dot"></span> DELIVERY SIMULATION</span><span>40 SEC RUN</span></div>
+            <h2>Terbangkan.<br /><em>Antar.</em> Ulangi.</h2>
+            <p class="screen-copy">Antarkan paket ke rumah yang tepat, hindari zona merah, dan jaga drone tetap aman dari traffic udara yang bergerak.</p>
+            <div class="mission-specs"><span><b>01</b> HAND CONTROL</span><span><b>02</b> MOVING TRAFFIC</span><span><b>03</b> BUILD A COMBO</span></div>
+            <button id="startButton" class="primary-button" type="button"><span>Mulai misi</span><b>ENTER</b></button>
+            <p id="cameraHint" class="micro-copy">Chrome atau Edge dengan izin kamera direkomendasikan.</p>
+            <div class="leaderboard-block">
+              <div class="section-heading"><span>HALL OF PILOTS / TOP 10</span><span>SKOR</span></div>
+              <ol id="idleLeaderboard" class="leaderboard-list"></ol>
+            </div>
+          </div>
+        </section>
+
+        <section id="calibrationScreen" class="screen" hidden>
+          <div class="screen-panel compact-panel">
+            <span class="step-badge">PRE-FLIGHT / 01</span>
+            <h2>Lock your hand.</h2>
+            <p class="screen-copy">Tahan telapak tangan tetap terlihat selama satu detik untuk menjadikan posisi ini titik netral.</p>
+            <div id="calibrationState" class="status-message">Menunggu tangan...</div>
+            <button id="calibrationButton" class="primary-button" type="button" disabled>Lanjut</button>
+            <button id="skipCalibrationButton" class="text-button" type="button">Gunakan kontrol mouse/touch</button>
+          </div>
+        </section>
+
+        <section id="countdownScreen" class="screen" hidden>
+          <div class="countdown-panel"><span class="step-badge">FLIGHT COMPUTER READY</span><strong id="countdownValue">3</strong><span>Find the matching house.</span></div>
+        </section>
+
+        <section id="endedScreen" class="screen" hidden>
+          <div class="screen-panel compact-panel">
+            <p class="eyebrow">FLIGHT LOG / COMPLETE</p>
+            <h2 id="finalScore">0 poin</h2>
+            <p id="finalSummary" class="screen-copy">Paket terkirim: 0</p>
+            <div class="end-stats"><span><b id="finalDelivered">0</b><small>DROP</small></span><span><b id="finalCombo">0</b><small>BEST COMBO</small></span></div>
+            <form id="scoreForm" class="score-form">
+              <label for="playerName">Nama / inisial</label>
+              <div class="name-row"><input id="playerName" name="playerName" maxlength="12" autocomplete="off" placeholder="DRONE-01" /><button class="primary-button" type="submit">Simpan</button></div>
+            </form>
+            <button id="playAgainButton" class="secondary-button" type="button">Terbang lagi <span>GO</span></button>
+            <div class="leaderboard-block"><div class="section-heading"><span>HALL OF PILOTS / TOP 10</span><span>SKOR</span></div><ol id="endedLeaderboard" class="leaderboard-list"></ol></div>
+          </div>
+        </section>
+      </section>
+      <p class="footer-note"><span class="footer-key">TIP</span> Pegang telapak tangan terbuka di dalam frame kamera. Drone akan berhenti jika pilot keluar frame.</p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
