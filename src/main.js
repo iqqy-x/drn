@@ -87,7 +87,11 @@ function updateCalibration(now) {
   const stable = Math.hypot(point.x - calibrationCandidate.x, point.y - calibrationCandidate.y) < .035;
   if (!stable) { calibrationCandidate = point; calibrationStableSince = now; screens.setCalibration("Tahan tangan tetap...", false); return; }
   if (!calibrationStableSince) calibrationStableSince = now;
-  if (elapsed > 700 && now - calibrationStableSince > 700) { calibrationReady = true; screens.setCalibration("Posisi netral terkunci.", true); }
+  if (elapsed > 700 && now - calibrationStableSince > 700) {
+    calibrationReady = true;
+    screens.setCalibration("Posisi netral terkunci. Mulai dalam 3 detik...", false, false);
+    startCountdown();
+  }
 }
 
 function updatePlaying(delta, now) {

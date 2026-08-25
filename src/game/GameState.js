@@ -23,7 +23,7 @@ export class GameSession {
   constructor() {
     this.houses = createHouses();
     this.zones = createNoFlyZones(this.houses);
-    this.obstacles = createMovingObstacles();
+    this.obstacles = createMovingObstacles(this.houses);
     this.drone = new Drone(CONFIG.CANVAS_WIDTH / 2, CONFIG.CANVAS_HEIGHT / 2);
     this.package = new DeliveryPackage(this.houses);
     this.score = 0;
@@ -38,10 +38,10 @@ export class GameSession {
 
   update(deltaSeconds, target, now) {
     this.drone.setTarget(target);
-    this.drone.update();
+    this.drone.update(deltaSeconds);
     this.remaining = Math.max(0, this.remaining - deltaSeconds);
     this.difficulty = 1 + (1 - this.remaining / CONFIG.GAME_DURATION_SECONDS) * .65;
-    updateMovingObstacles(this.obstacles, now, this.difficulty);
+    updateMovingObstacles(this.obstacles, now, deltaSeconds, this.difficulty, this.houses, this.drone);
     const targetHouse = this.houses.find((house) => house.id === this.package.targetHouseId);
     if (targetHouse && circlesIntersect(this.drone, targetHouse, 2)) {
       this.combo += 1;
@@ -54,10 +54,10 @@ export class GameSession {
     }
     for (let i = 0; i < this.zones.length; i += 1) {
       if (circleIntersectsRect(this.drone, this.zones[i]) && (this.zoneCooldowns.get(i) || 0) < now) {
-        this.score = Math.max(0, this.score - 25);
+        this.score = Math.max(0, this.score - CONFIG.NO_FLY_PENALTY);
         this.combo = 0;
         this.zoneCooldowns.set(i, now + 1100);
-        this.feedback = { text: "NO-FLY ZONE -25", detail: "COMBO RESET", color: "#ff6277", x: this.drone.x, y: this.drone.y, expires: now + 1000 };
+        this.feedback = { text: `NO-FLY ZONE -${CONFIG.NO_FLY_PENALTY}`, detail: "COMBO RESET", color: "#ff6277", x: this.drone.x, y: this.drone.y, expires: now + 1000 };
         break;
       }
     }
